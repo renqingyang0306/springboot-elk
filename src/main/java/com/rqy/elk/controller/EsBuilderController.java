@@ -1,16 +1,12 @@
 package com.rqy.elk.controller;
 
-import com.rqy.elk.core.RestResponse;
-import com.rqy.elk.domain.Builder;
-import com.rqy.elk.esDao.BuilderDao;
+import com.rqy.elk.esDao.EsService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
-import java.util.Optional;
 
 /**
  * @Author renqingyang
@@ -24,7 +20,7 @@ import java.util.Optional;
 public class EsBuilderController {
 
     @Autowired
-    BuilderDao builderDao;
+    EsService esService;
 
     /**
      * 方式1
@@ -32,29 +28,11 @@ public class EsBuilderController {
      * 单个保存索引
      * @return
      */
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public RestResponse save(@RequestBody Builder builder){
-        builder = builder == null ? new Builder() : builder;
+    @RequestMapping(value = "/save", produces = {"application/json;charset=UTF-8;"}, method = RequestMethod.POST)
+    public ResponseEntity save(@RequestParam String data){
 
-        RestResponse res = new RestResponse();
-        Builder builder2 = builderDao.save(builder);
+        return new ResponseEntity(null, HttpStatus.OK);
 
-        res.setResult(builder2);
-        return res;
-    }
-    /**
-     * 方式1
-     *
-     * 根据ID获取单个索引
-     * @param id
-     * @return
-     */
-    @RequestMapping(value = "/get", method = RequestMethod.GET)
-    public RestResponse get(Long id){
-        RestResponse res = new RestResponse();
-        Optional<Builder> get = builderDao.findById(id);
-        res.setResult(get.isPresent() == false ? null : get.get());
-        return res;
     }
 
 }
