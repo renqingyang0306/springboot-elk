@@ -1,17 +1,14 @@
 package com.rqy.elk.esDao;
 
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.JSONValidator;
 import com.alibaba.fastjson.TypeReference;
 import com.rqy.elk.core.Constant;
-import com.rqy.elk.core.RestResponse;
 import net.logstash.logback.encoder.org.apache.commons.lang.StringUtils;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.ElasticsearchStatusException;
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.admin.indices.close.CloseIndexRequest;
-import org.elasticsearch.action.admin.indices.close.CloseIndexResponse;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
@@ -293,7 +290,7 @@ public class EsService {
             if (e.status() == RestStatus.CONFLICT) {
                 logger.error("版本异常！");
             }
-            logger.error("文档新增失败！");
+            logger.error("文档新增失败！" + e);
         }
     }
     /**
@@ -604,8 +601,8 @@ public class EsService {
                 builder.startObject("message");
                     builder.field("type", "text");
                     // 为message字段，设置分词器为 ik_smart(最粗粒度)
-                    builder.field("analyzer", "ikSearchAnalyzer");
-                    builder.field("search_analyzer", "ikSearchAnalyzer");
+                    builder.field("analyzer", "ik_smart");
+                    builder.field("search_analyzer", "ik_max_word");
                 builder.endObject();
 
                 builder.startObject("level");
