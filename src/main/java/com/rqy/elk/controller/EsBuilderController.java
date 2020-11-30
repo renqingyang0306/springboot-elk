@@ -96,4 +96,36 @@ public class EsBuilderController {
 
     }
 
+    @RequestMapping(value = "/updateDoc", produces = {"application/json;charset=UTF-8;"}, method = RequestMethod.GET)
+    public ResponseEntity updateDoc(@RequestParam(value = "id", required = false,  defaultValue = "") String id,
+                                    @RequestParam(value = "message", defaultValue = "") String message,
+                                    @RequestParam(value = "level", required = false, defaultValue = "") String level,
+                                    @RequestParam(value = "createTime", required = false,  defaultValue = "") String createTime) {
+        HashMap<String, String> map = new HashMap<>();
+        String time= LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        map.put("message", message);
+        map.put("level", level);
+        map.put("createTime", time);
+        try {
+            esService.updateDocByJson(INDEX, TYPE, id, JSONObject.toJSONString(map));
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.error("查询doc失败！id={}",id);
+        }
+        return new ResponseEntity(id, HttpStatus.OK);
+
+    }
+
+    @RequestMapping(value = "/deleteDoc", produces = {"application/json;charset=UTF-8;"}, method = RequestMethod.GET)
+    public ResponseEntity deleteDoc(@RequestParam(value = "id", required = false,  defaultValue = "") String id) {
+        try {
+            esService.deleteDocument(INDEX, TYPE, id);
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.error("查询doc失败！id={}",id);
+        }
+        return new ResponseEntity(id, HttpStatus.OK);
+
+    }
+
 }
